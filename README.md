@@ -19,4 +19,8 @@ The secrets imported from AWS Secret Manager have the following format:
 
 ## Usage 
 
-ansible-playbook import-on-rhacm.yaml  --extra-vars "managed_cluster_name=<managed_cluster_name> aws_access_key='<aws_access_key>' aws_secret_key='<aws_secret_key>' cluster_type=<cluster_type>"
+To use the playbook launch the following command: 
+
+```bash
+  ansible-playbook import-on-rhacm.yaml  --extra-vars "managed_cluster_name=<managed_cluster_name> aws_access_key='<aws_access_key>' aws_secret_key='<aws_secret_key>' cluster_type=<cluster_type>"
+```
