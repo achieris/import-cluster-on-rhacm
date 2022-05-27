@@ -1,7 +1,5 @@
 - name: Import Kubernetes cluster on Red Hat Advanced Cluster Management for Kubernetes 
-  hosts: localhost
-  collections:
-    - kubernetes.core
+  hosts: all
   tasks:
   - name: Create the managed cluster namespace on RHACM
     kubernetes.core.k8s:
@@ -82,7 +80,8 @@
             enabled: true
 
   vars:  
-    rhacm_credentials:  "{{ lookup('aws_secret', 'rhacm', region='eu-central-1',aws_access_key=aws_access_key, aws_secret_key=aws_secret_key,nested=true)  }}"
-    managed_cluster_credentials:  "{{ lookup('aws_secret', managed_cluster_name, region='eu-central-1',aws_access_key=aws_access_key, aws_secret_key=aws_secret_key, nested=true) }}"
     aws_access_key: '{{ lookup("env", "AWS_ACCESS_KEY_ID") }}'
     aws_secret_key: '{{ lookup("env", "AWS_SECRET_ACCESS_KEY") }}'
+    rhacm_credentials:  "{{ lookup('aws_secret', 'rhacm', region='eu-central-1',aws_access_key=aws_access_key, aws_secret_key=aws_secret_key,nested=true)  }}"
+    managed_cluster_credentials:  "{{ lookup('aws_secret', managed_cluster_name, region='eu-central-1',aws_access_key=aws_access_key, aws_secret_key=aws_secret_key, nested=true) }}"
+
