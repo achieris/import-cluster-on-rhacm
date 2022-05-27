@@ -6,6 +6,12 @@
   - cloud.common
 
   tasks:
+  - name: install pre-requisites
+    pip:
+      name:
+        - openshift
+        - pyyaml
+        - kubernetes 
   - name: Create the managed cluster namespace on RHACM
     k8s:
       host: "{{ rhacm_credentials['api'] }}"
