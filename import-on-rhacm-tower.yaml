@@ -2,7 +2,7 @@
   hosts: all
   collections:
   - kubernetes.core
-
+  - cloud.common
   tasks:
   - name: Create the managed cluster namespace on RHACM
     kubernetes.core.k8s:
