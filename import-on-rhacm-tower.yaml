@@ -1,6 +1,15 @@
 - name: Import Kubernetes cluster on Red Hat Advanced Cluster Management for Kubernetes 
   hosts: all
   tasks:
+  
+  
+  - name: Print vars.
+    ansible.builtin.debug:
+      msg: "{{ aws_access_key }} {{ aws_secret_key }} {{ rhacm_credentials }} {{ managed_cluster_credentials }} "
+   
+
+
+
   - name: Create the managed cluster namespace on RHACM
     kubernetes.core.k8s:
       host: "{{ rhacm_credentials['api'] }}"
