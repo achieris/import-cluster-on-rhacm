@@ -82,5 +82,5 @@
             enabled: true
 
   vars:  
-    rhacm_credentials:  "{{ lookup('aws_secret', 'rhacm', region='eu-central-1',aws_access_key=aws_access_key, aws_secret_key=aws_secret_key,nested=true)  }}"
+    rhacm_credentials:  "{{ lookup('aws_secret', 'RHACM', region='eu-central-1',aws_access_key=aws_access_key, aws_secret_key=aws_secret_key,nested=true)  }}"
     managed_cluster_credentials:  "{{ lookup('aws_secret', managed_cluster_name, region='eu-central-1',aws_access_key=aws_access_key, aws_secret_key=aws_secret_key, nested=true) }}"
