@@ -8,9 +8,11 @@
   tasks:
   - name: install pre-requisites
     pip:
-      name:
-      - openshift
-      - kubernetes 
+      name: openshift 
+      executable: pip3
+  - name: install pre-requisites
+    pip:
+      name: kubernetes
       executable: pip3
 
   - name: Create the managed cluster namespace on RHACM
