@@ -1,16 +1,11 @@
 - name: Import Kubernetes cluster on Red Hat Advanced Cluster Management for Kubernetes 
   hosts: all
   tasks:
-  - name: Install bottle python package on version 0.11
-    pip:
-      name: 
-        - boto3
-        - botocore
-        - kubernetes 
+
         
   - name: Print vars.
     ansible.builtin.debug:
-      msg: "{{ aws_access_key }} {{ aws_secret_key }} {{ rhacm_credentials }} {{ managed_cluster_credentials }} "
+      msg: "{{ aws_access_key }} {{ aws_secret_key }}"
    
 
 
