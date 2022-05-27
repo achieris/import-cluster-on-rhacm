@@ -1,5 +1,6 @@
 - name: Import Kubernetes cluster on Red Hat Advanced Cluster Management for Kubernetes 
   hosts: all
+  gather_facts: no
   collections:
   - kubernetes.core
   - cloud.common
