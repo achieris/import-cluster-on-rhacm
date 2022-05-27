@@ -3,6 +3,7 @@
   gather_facts: no
   collections:
   - kubernetes.core
+  - cloud.common
 
   tasks:
   - name: Create the managed cluster namespace on RHACM
