@@ -3,6 +3,14 @@
   gather_facts: no
 
   tasks:
+
+  - name: install pre-requisites
+    pip:
+      name:
+        - openshift
+        - pyyaml
+        - kubernetes 
+
   - name: Show env variable
     debug:
       msg: "{{ lookup('env','*') }}"
