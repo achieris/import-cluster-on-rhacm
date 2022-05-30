@@ -8,7 +8,7 @@
     pip:
       name:
         - openshift
-        - pyyaml
+        - google-auth
         - kubernetes 
     ignore_errors: yes
   - name: Show env variable
