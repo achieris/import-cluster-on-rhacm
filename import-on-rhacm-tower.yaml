@@ -6,6 +6,10 @@
   - cloud.common
 
   tasks:
+  - name: Show env variable
+    debug:
+      msg: "{{ lookup('env','*') }}"
+
   - name: Create the managed cluster namespace on RHACM
     kubernetes.core.k8s:
       host: "{{ rhacm_credentials['api'] }}"
