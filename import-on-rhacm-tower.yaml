@@ -1,9 +1,6 @@
 - name: Import Kubernetes cluster on Red Hat Advanced Cluster Management for Kubernetes 
   hosts: all
   gather_facts: no
-  collections:
-  - kubernetes.core
-  - cloud.common
 
   tasks:
   - name: Show env variable
@@ -11,7 +8,7 @@
       msg: "{{ lookup('env','*') }}"
 
   - name: Create the managed cluster namespace on RHACM
-    kubernetes.core.k8s:
+    k8s:
       host: "{{ rhacm_credentials['api'] }}"
       api_key: "{{ rhacm_credentials['token'] }}"
       validate_certs : no            
@@ -21,7 +18,7 @@
       state: present
     
   - name: Create the managed cluster CR 
-    kubernetes.core.k8s:
+    k8s:
       host: "{{ rhacm_credentials['api'] }}"
       api_key: "{{ rhacm_credentials['token'] }}"
       validate_certs : no 
@@ -40,7 +37,7 @@
           leaseDurationSeconds: 60
 
   - name: Create the KlusterletAddonConfig
-    kubernetes.core.k8s:
+    k8s:
       host: "{{ rhacm_credentials['api'] }}"
       api_key: "{{ rhacm_credentials['token'] }}"
       validate_certs : no
@@ -72,7 +69,7 @@
 
   
   - name: "Get the value of {{ managed_cluster_name }}-import secret"
-    kubernetes.core.k8s_info:
+    k8s_info:
       host: "{{ rhacm_credentials['api'] }}"
       api_key: "{{ rhacm_credentials['token'] }}"
       validate_certs : no
@@ -93,7 +90,7 @@
     with_items: "{{ managed_cluster_import.resources }}"
 
   - name: "Apply crds.yaml to the cluster target. " 
-    kubernetes.core.k8s:
+    k8s:
       host: "{{ managed_cluster_credentials['api'] }}"             
       api_key: "{{ managed_cluster_credentials['token'] }}" 
       validate_certs : no
@@ -101,7 +98,7 @@
       definition: "{{ crds_yaml }}"
 
   - name: "Apply import.yaml to the cluster target. "
-    kubernetes.core.k8s:
+    k8s:
       host: "{{ managed_cluster_credentials['api'] }}" 
       api_key: "{{ managed_cluster_credentials['token'] }}" 
       validate_certs : no
