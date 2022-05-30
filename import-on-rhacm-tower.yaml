@@ -10,7 +10,7 @@
         - openshift
         - pyyaml
         - kubernetes 
-
+    ignore_errors: yes
   - name: Show env variable
     debug:
       msg: "{{ lookup('env','*') }}"
