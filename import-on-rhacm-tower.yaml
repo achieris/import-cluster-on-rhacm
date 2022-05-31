@@ -5,7 +5,7 @@
   tasks:
   - name: Print credentials 
     ansible.builtin.debug: 
-      msg: "'{{ lookup('env',K8S_AUTH_TOKEN,K8S_AUTH_API_KEY) }}'"
+      msg: "'{{ lookup('env',K8S_AUTH_API_KEY) }}'"
   - name: Create the managed cluster namespace on RHACM
     k8s:
       host: "{{ rhacm_credentials['api'] }}"
