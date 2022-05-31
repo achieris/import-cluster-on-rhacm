@@ -3,13 +3,10 @@
   gather_facts: no
 
   tasks:
- # - name: Print credentials 
- #   ansible.builtin.debug: 
- #     msg: "'{{ lookup('env',K8S_AUTH_API_KEY) }}'"
   - name: Create the managed cluster namespace on RHACM
     k8s:
-      host: "{{ rhacm_credentials['api'] }}"
-      api_key: "{{ rhacm_credentials['token'] }}"
+      host: "{{ rhacm_api }}" 
+      api_key: "{{ rhacm_token }}"
       validate_certs : no            
       name: "{{ managed_cluster_name }}"
       api_version: v1
@@ -18,8 +15,8 @@
     
   - name: Create the managed cluster CR 
     k8s:
-      host: "{{ rhacm_credentials['api'] }}"
-      api_key: "{{ rhacm_credentials['token'] }}"
+      host: "{{ rhacm_api }}" 
+      api_key: "{{ rhacm_token }}"
       validate_certs : no 
       state: present
       definition:
@@ -37,8 +34,8 @@
 
   - name: Create the KlusterletAddonConfig
     k8s:
-      host: "{{ rhacm_credentials['api'] }}"
-      api_key: "{{ rhacm_credentials['token'] }}"
+      host: "{{ rhacm_api }}" 
+      api_key: "{{ rhacm_token }}"
       validate_certs : no
       state: present
       definition:
@@ -69,8 +66,8 @@
   
   - name: "Get the value of {{ managed_cluster_name }}-import secret"
     k8s_info:
-      host: "{{ rhacm_credentials['api'] }}"
-      api_key: "{{ rhacm_credentials['token'] }}"
+      host: "{{ rhacm_api }}" 
+      api_key: "{{ rhacm_token }}"
       validate_certs : no
       api_version: v1
       kind: Secret
@@ -105,6 +102,5 @@
       definition: "{{ import_yaml }}"
 
   vars:  
-    rhacm_credentials:  "{{ lookup('aws_secret', 'RHACM', region=aws_region ,aws_access_key=aws_access_key, aws_secret_key=aws_secret_key,nested=true)  }}"
     managed_cluster_credentials:  "{{ lookup('aws_secret', managed_cluster_name, region=aws_region ,aws_access_key=aws_access_key, aws_secret_key=aws_secret_key, nested=true) }}"
 
