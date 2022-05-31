@@ -4,14 +4,14 @@
 
   tasks:
   - name: Lookup managed_cluster_credentials on AWS Secret Manager 
-      set_fact: 
-        managed_cluster_credentials:  "{{ lookup('aws_secret', managed_cluster_name, region=aws_region ,aws_access_key=aws_access_key, aws_secret_key=aws_secret_key, nested=true) }}"
-      when: aws_security_token is undefined
+    set_fact: 
+      managed_cluster_credentials:  "{{ lookup('aws_secret', managed_cluster_name, region=aws_region ,aws_access_key=aws_access_key, aws_secret_key=aws_secret_key, nested=true) }}"
+    when: aws_security_token is undefined
 
   - name: Lookup managed_cluster_credentials on AWS Secret Manager 
-      set_fact: 
-        managed_cluster_credentials:  "{{ lookup('aws_secret', managed_cluster_name, region=aws_region, aws_security_token=aws_security_token ,aws_access_key=aws_access_key, aws_secret_key=aws_secret_key, nested=true) }}"
-      when: aws_security_token is defined
+    set_fact: 
+      managed_cluster_credentials:  "{{ lookup('aws_secret', managed_cluster_name, region=aws_region, aws_security_token=aws_security_token ,aws_access_key=aws_access_key, aws_secret_key=aws_secret_key, nested=true) }}"
+    when: aws_security_token is defined
 
 
   - name: Create the managed cluster namespace on RHACM
