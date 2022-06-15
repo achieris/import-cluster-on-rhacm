@@ -1,15 +1,12 @@
-- name: Import Kubernetes cluster on Red Hat Advanced Cluster Management for Kubernetes 
+
+
+- name: "Import or detach a Kubernetes cluster on Red Hat Advanced Cluster Management for Kubernetes"
   hosts: all
   gather_facts: no
 
   tasks:
 
-  - name: Lookup managed_cluster_credentials on AWS Secret Manager.
-    set_fact: 
-      managed_cluster_credentials:  "{{ lookup('aws_secret', managed_cluster_name, region=aws_region, aws_security_token=aws_security_token ,aws_access_key=aws_access_key, aws_secret_key=aws_secret_key, nested=true) }}"
-
-
-  - name: Create the managed cluster namespace on RHACM
+  - name: "Create the managed cluster namespace on RHACM"
     k8s:
       host: "{{ rhacm_api }}" 
       api_key: "{{ rhacm_token }}"
@@ -18,8 +15,9 @@
       api_version: v1
       kind: Namespace
       state: present
+    when: not destroy
     
-  - name: Create the managed cluster CR 
+  - name: "Create the managed cluster CR on RHACM"
     k8s:
       host: "{{ rhacm_api }}" 
       api_key: "{{ rhacm_token }}"
@@ -37,8 +35,9 @@
         spec:
           hubAcceptsClient: true
           leaseDurationSeconds: 60
+    when: not destroy
 
-  - name: Create the KlusterletAddonConfig
+  - name: "Create the KlusterletAddonConfig CR on RHACM"
     k8s:
       host: "{{ rhacm_api }}" 
       api_key: "{{ rhacm_token }}"
@@ -68,9 +67,9 @@
             enabled: true
           iamPolicyController:
             enabled: true
-
+    when: not destroy
   
-  - name: "Get the value of {{ managed_cluster_name }}-import secret"
+  - name: "Get the value of {{ managed_cluster_name }}-import secret automatically created on RHACM"
     k8s_info:
       host: "{{ rhacm_api }}" 
       api_key: "{{ rhacm_token }}"
@@ -80,31 +79,67 @@
       name: "{{ managed_cluster_name }}-import"
       namespace: "{{ managed_cluster_name }}"
     register: managed_cluster_import
+    when: not destroy
 
-  - name: Get crds.yaml manifest.
+  - name: "Get crds.yaml manifest from {{ managed_cluster_name }}-import"
     set_fact:
       crds_yaml: "{{ item.data['crds.yaml']  | b64decode }}"
     with_items: "{{ managed_cluster_import.resources }}"
+    when: not destroy
 
-  - name: Get import.yaml manifest.
+  - name: "Get import.yaml manifest from {{ managed_cluster_name }}-import"
     set_fact:
       import_yaml: "{{ item.data['import.yaml']  | b64decode }}"
     with_items: "{{ managed_cluster_import.resources }}"
+    when: not destroy
 
-  - name: "Apply crds.yaml to the cluster target. " 
+  - name: "Apply crds.yaml to the cluster target " 
     k8s:
-      host: "{{ managed_cluster_credentials['api'] }}"             
-      api_key: "{{ managed_cluster_credentials['token'] }}" 
+      host: "{{ managed_cluster_api }}"             
+      api_key: "{{ managed_cluster_token }}" 
       validate_certs : no
       state: present
       definition: "{{ crds_yaml }}"
+    when: not destroy
 
-  - name: "Apply import.yaml to the cluster target. "
+  - name: "Apply import.yaml to the cluster target"
     k8s:
-      host: "{{ managed_cluster_credentials['api'] }}" 
-      api_key: "{{ managed_cluster_credentials['token'] }}" 
+      host: "{{ managed_cluster_api }}"             
+      api_key: "{{ managed_cluster_token }}" 
       validate_certs : no
       state: present
       definition: "{{ import_yaml }}"
+    when: not destroy
+
+  - name: "Delete the managed cluster CR on RHACM"
+    k8s:
+      host: "{{ rhacm_api }}" 
+      api_key: "{{ rhacm_token }}"
+      validate_certs : no 
+      state: absent
+      definition:
+        apiVersion: cluster.open-cluster-management.io/v1
+        kind: ManagedCluster
+        metadata:
+          name: "{{ managed_cluster_name }}"
+    when: destroy
+
+  - name: "Delete import.yaml to the cluster target"
+    k8s:
+      host: "{{ managed_cluster_api }}"             
+      api_key: "{{ managed_cluster_token }}" 
+      validate_certs : no
+      state: absent
+      definition: "{{ import_yaml }}"
+    when: destroy
+
+  - name: "Apply crds.yaml to the cluster target " 
+    k8s:
+      host: "{{ managed_cluster_api }}"             
+      api_key: "{{ managed_cluster_token }}" 
+      validate_certs : no
+      state: absent
+      definition: "{{ crds_yaml }}"
+    when: destroy
 
 
