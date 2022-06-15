@@ -15,7 +15,7 @@
       api_version: v1
       kind: Namespace
       state: present
-    when: not destroy
+    when: destroy == false
     
   - name: "Create the managed cluster CR on RHACM"
     k8s:
@@ -35,7 +35,7 @@
         spec:
           hubAcceptsClient: true
           leaseDurationSeconds: 60
-    when: not destroy
+    when: destroy == false
 
   - name: "Create the KlusterletAddonConfig CR on RHACM"
     k8s:
@@ -67,7 +67,7 @@
             enabled: true
           iamPolicyController:
             enabled: true
-    when: not destroy
+    when: destroy == false
   
   - name: "Get the value of {{ managed_cluster_name }}-import secret automatically created on RHACM"
     k8s_info:
@@ -79,19 +79,19 @@
       name: "{{ managed_cluster_name }}-import"
       namespace: "{{ managed_cluster_name }}"
     register: managed_cluster_import
-    when: not destroy
+    when: destroy == false
 
   - name: "Get crds.yaml manifest from {{ managed_cluster_name }}-import"
     set_fact:
       crds_yaml: "{{ item.data['crds.yaml']  | b64decode }}"
     with_items: "{{ managed_cluster_import.resources }}"
-    when: not destroy
+    when: destroy == false
 
   - name: "Get import.yaml manifest from {{ managed_cluster_name }}-import"
     set_fact:
       import_yaml: "{{ item.data['import.yaml']  | b64decode }}"
     with_items: "{{ managed_cluster_import.resources }}"
-    when: not destroy
+    when: destroy == false
 
   - name: "Apply crds.yaml to the cluster target " 
     k8s:
@@ -100,7 +100,7 @@
       validate_certs : no
       state: present
       definition: "{{ crds_yaml }}"
-    when: not destroy
+    when: destroy == false
 
   - name: "Apply import.yaml to the cluster target"
     k8s:
@@ -109,7 +109,7 @@
       validate_certs : no
       state: present
       definition: "{{ import_yaml }}"
-    when: not destroy
+    when: destroy == false
 
   - name: "Delete the managed cluster CR on RHACM"
     k8s:
@@ -122,7 +122,7 @@
         kind: ManagedCluster
         metadata:
           name: "{{ managed_cluster_name }}"
-    when: destroy
+    when: destroy == true
 
   - name: "Delete import.yaml to the cluster target"
     k8s:
@@ -131,7 +131,7 @@
       validate_certs : no
       state: absent
       definition: "{{ import_yaml }}"
-    when: destroy
+    when: destroy == true
 
   - name: "Apply crds.yaml to the cluster target " 
     k8s:
@@ -140,6 +140,6 @@
       validate_certs : no
       state: absent
       definition: "{{ crds_yaml }}"
-    when: destroy
+    when: destroy == true
 
 
