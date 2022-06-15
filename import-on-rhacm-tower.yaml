@@ -1,5 +1,4 @@
-
- - name: "Import or detach a Kubernetes cluster on Red Hat Advanced Cluster Management for Kubernetes"
+- name: "Import or detach a Kubernetes cluster on Red Hat Advanced Cluster Management for Kubernetes"
   hosts: all
   gather_facts: no
 
