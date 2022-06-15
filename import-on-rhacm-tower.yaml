@@ -79,19 +79,18 @@
       name: "{{ managed_cluster_name }}-import"
       namespace: "{{ managed_cluster_name }}"
     register: managed_cluster_import
-    when: destroy == "false"
+
 
   - name: "Get crds.yaml manifest from {{ managed_cluster_name }}-import"
     set_fact:
       crds_yaml: "{{ item.data['crds.yaml']  | b64decode }}"
     with_items: "{{ managed_cluster_import.resources }}"
-    when: destroy == "false"
+
 
   - name: "Get import.yaml manifest from {{ managed_cluster_name }}-import"
     set_fact:
       import_yaml: "{{ item.data['import.yaml']  | b64decode }}"
     with_items: "{{ managed_cluster_import.resources }}"
-    when: destroy == "false"
 
   - name: "Apply crds.yaml to the cluster target " 
     k8s:
